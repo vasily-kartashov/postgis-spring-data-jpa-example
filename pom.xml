@@ -35,12 +35,14 @@
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-spatial</artifactId>
-            <version>4.3</version>
+            <version>${hibernate.version}</version>
         </dependency>
+
     </dependencies>
 
     <properties>
         <java.version>1.8</java.version>
+        <hibernate.version>5.0.7.Final</hibernate.version>
     </properties>
 
     <build>
@@ -62,14 +64,6 @@
             <id>org.jboss.repository.releases</id>
             <name>JBoss Maven Release Repository</name>
             <url>https://repository.jboss.org/nexus/content/repositories/releases</url>
-        </repository>
-        <repository>
-            <id>OSGEO GeoTools repo</id>
-            <url>http://download.osgeo.org/webdav/geotools</url>
-        </repository>
-        <repository>
-            <id>Hibernate Spatial repo</id>
-            <url>http://www.hibernatespatial.org/repository</url>
         </repository>
     </repositories>
 

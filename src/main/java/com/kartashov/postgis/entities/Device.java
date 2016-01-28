@@ -1,7 +1,6 @@
 package com.kartashov.postgis.entities;
 
-import com.vividsolutions.jts.geom.Geometry;
-import org.hibernate.annotations.Type;
+import com.vividsolutions.jts.geom.Point;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -16,9 +15,8 @@ public class Device {
     @Column(name = "id")
     private String id;
 
-    @Type(type = "org.hibernate.spatial.GeometryType")
-    @Column(name = "location", nullable = false)
-    private Geometry location;
+    @Column(name = "location", nullable = false, columnDefinition = "geometry(Point,4326)")
+    private Point location;
 
     public String getId() {
         return id;
@@ -28,11 +26,16 @@ public class Device {
         this.id = id;
     }
 
-    public Geometry getLocation() {
+    public Point getLocation() {
         return location;
     }
 
-    public void setLocation(Geometry location) {
+    public void setLocation(Point location) {
         this.location = location;
+    }
+
+    @Override
+    public String toString() {
+        return "Device " + id + " @ " + location.toText();
     }
 }

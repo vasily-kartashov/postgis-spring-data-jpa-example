@@ -6,6 +6,7 @@ import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
 import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.io.WKTReader;
+import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,6 +15,8 @@ import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.List;
+
+import static junit.framework.TestCase.assertEquals;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(Application.class)
@@ -24,18 +27,28 @@ public class DeviceRepositoryTest {
 
     @Before
     public void setUp() throws ParseException {
-        Device device = new Device();
-        device.setId("de-001");
-        Point point = (Point) new WKTReader().read("POINT(5 5)");
-        device.setLocation(point);
-        deviceRepository.save(device);
+        Device device1 = new Device();
+        device1.setId("de-001");
+        Point point1 = (Point) new WKTReader().read("POINT(5 5)");
+        point1.setSRID(4326);
+        device1.setLocation(point1);
+        deviceRepository.save(device1);
+
+        Device device2 = new Device();
+        device2.setId("de-002");
+        Point point2 = (Point) new WKTReader().read("POINT(13 2)");
+        point2.setSRID(4326);
+        device2.setLocation(point2);
+        deviceRepository.save(device2);
     }
 
     @Test
     public void testFindWithinPolygon() throws ParseException {
         Polygon polygon = (Polygon) new WKTReader().read("POLYGON((0 0,0 10,10 10,10 0,0 0))");
-        List<Device> devices = deviceRepository.findWithinPolygon(polygon);
+        polygon.setSRID(4326);
+        List<Device> devices = deviceRepository.findWithin(polygon);
 
-        System.out.println(devices);
+        assertEquals(1, devices.size());
+        assertEquals("de-001", devices.get(0).getId());
     }
 }
