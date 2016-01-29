@@ -1,5 +1,6 @@
 package com.kartashov.postgis.entities;
 
+import com.kartashov.postgis.hibernate.Properties;
 import com.vividsolutions.jts.geom.Point;
 
 import javax.persistence.Column;
@@ -18,6 +19,9 @@ public class Device {
     @Column(name = "location", nullable = false, columnDefinition = "geometry(Point,4326)")
     private Point location;
 
+    @Column(name = "status", nullable = false, columnDefinition = "jsonb")
+    private Properties status = new Properties();
+
     public String getId() {
         return id;
     }
@@ -34,8 +38,16 @@ public class Device {
         this.location = location;
     }
 
+    public Properties getStatus() {
+        return status;
+    }
+
+    public void setStatus(Properties status) {
+        this.status = status;
+    }
+
     @Override
     public String toString() {
-        return "Device " + id + " @ " + location.toText();
+        return "Device " + id + " @ " + location.toText() + ". " + status;
     }
 }
