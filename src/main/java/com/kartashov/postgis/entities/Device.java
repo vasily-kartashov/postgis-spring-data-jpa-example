@@ -13,9 +13,6 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "devices")
-@TypeDefs({
-        @TypeDef(name = "deviceStatusType", typeClass = StatusType.class)
-})
 public class Device {
 
     @Id
@@ -26,7 +23,7 @@ public class Device {
     private Point location;
 
     @Column(name = "status", nullable = false, columnDefinition = "jsonb")
-    @Type(type = "deviceStatusType")
+    @Type(type = "com.kartashov.postgis.types.StatusType")
     private Status status = new Status();
 
     public String getId() {

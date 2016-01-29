@@ -10,7 +10,7 @@ public class JSONPostgisDialect extends PostgisDialect {
     protected void registerTypesAndFunctions() {
         super.registerTypesAndFunctions();
         registerColumnType(JSONTypeDescriptor.INSTANCE.getSqlType(), "jsonb");
-        registerFunction("jsonb_extract_path_text",
+        registerFunction("extract",
                 new StandardSQLFunction("jsonb_extract_path_text", StandardBasicTypes.STRING));
     }
 }
