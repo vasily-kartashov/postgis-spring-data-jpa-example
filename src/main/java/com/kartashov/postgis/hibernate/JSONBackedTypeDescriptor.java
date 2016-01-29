@@ -1,6 +1,7 @@
 package com.kartashov.postgis.hibernate;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hibernate.type.descriptor.WrapperOptions;
 import org.hibernate.type.descriptor.java.AbstractTypeDescriptor;
 import org.hibernate.type.descriptor.java.JavaTypeDescriptorRegistry;
@@ -9,22 +10,20 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
-public class PropertiesTypeDescriptor extends AbstractTypeDescriptor<Properties> {
+public class JSONBackedTypeDescriptor<T> extends AbstractTypeDescriptor<T> {
 
-    public static PropertiesTypeDescriptor INSTANCE = new PropertiesTypeDescriptor();
+    private static final Logger logger = LoggerFactory.getLogger(JSONBackedTypeDescriptor.class);
+    private static final ObjectMapper objectMapper = new ObjectMapper();
 
-    private static final Logger logger = LoggerFactory.getLogger(PropertiesTypeDescriptor.class);
-
-    @SuppressWarnings("unchecked")
-    public PropertiesTypeDescriptor() {
-        super(Properties.class);
+    public JSONBackedTypeDescriptor(Class<T> type) {
+        super(type);
         JavaTypeDescriptorRegistry.INSTANCE.addDescriptor(this);
     }
 
     @Override
-    public String toString(Properties value) {
+    public String toString(T value) {
         try {
-            return JsonbTypeDescriptor.objectMapper.writeValueAsString(value);
+            return objectMapper.writeValueAsString(value);
         } catch (JsonProcessingException e) {
             logger.warn("Cannot convert map {} to string", e);
             return "{}";
@@ -32,9 +31,9 @@ public class PropertiesTypeDescriptor extends AbstractTypeDescriptor<Properties>
     }
 
     @Override
-    public Properties fromString(String string) {
+    public T fromString(String string) {
         try {
-            return JsonbTypeDescriptor.objectMapper.readValue(string, JsonbTypeDescriptor.typeReference);
+            return objectMapper.readValue(string, getJavaTypeClass());
         } catch (IOException e) {
             logger.warn("Cannot read value from {}", string, e);
             return null;
@@ -42,11 +41,11 @@ public class PropertiesTypeDescriptor extends AbstractTypeDescriptor<Properties>
     }
 
     @Override
-    public <X> X unwrap(Properties value, Class<X> type, WrapperOptions options) {
+    public <X> X unwrap(T value, Class<X> type, WrapperOptions options) {
         if (value == null) {
             return null;
         }
-        if (Properties.class.isAssignableFrom(type)) {
+        if (type.isAssignableFrom(value.getClass())) {
             return type.cast(value);
         }
         if (String.class.isAssignableFrom(type)) {
@@ -56,13 +55,12 @@ public class PropertiesTypeDescriptor extends AbstractTypeDescriptor<Properties>
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public <X> Properties wrap(X value, WrapperOptions options) {
+    public <X> T wrap(X value, WrapperOptions options) {
         if (value == null) {
             return null;
         }
-        if (value instanceof Properties) {
-            return (Properties) value;
+        if (value.getClass().isAssignableFrom(getJavaTypeClass())) {
+            return getJavaTypeClass().cast(value);
         }
         if (value instanceof String) {
             return fromString((String) value);

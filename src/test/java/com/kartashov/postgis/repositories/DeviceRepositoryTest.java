@@ -31,11 +31,8 @@ public class DeviceRepositoryTest {
         Point point1 = (Point) new WKTReader().read("POINT(5 5)");
         point1.setSRID(4326);
         device1.setLocation(point1);
-        device1.getStatus().put("stateOfCharge", 0.2);
-        device1.getStatus().put("errors", Arrays.asList(12, 32, 33));
-        Map<String, Object> lifeCycle = new HashMap<>();
-        lifeCycle.put("state", "ready");
-        device1.getStatus().put("lifeCycle", lifeCycle);
+        device1.getStatus().setStateOfCharge(0.2);
+        device1.getStatus().setLifeCycle("ready");
         deviceRepository.save(device1);
 
         Device device2 = new Device();
@@ -63,8 +60,6 @@ public class DeviceRepositoryTest {
         List<Device> devices = deviceRepository.findHealthyDevices();
 
         System.out.println(devices);
-
-        System.out.println(devices.get(0).getStatus().get("lifeCycle").getClass());
 
         assertEquals(1, devices.size());
         assertEquals("de-001", devices.get(0).getId());
