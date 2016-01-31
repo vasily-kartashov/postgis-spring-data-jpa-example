@@ -37,12 +37,22 @@
             <artifactId>hibernate-spatial</artifactId>
             <version>${hibernate.version}</version>
         </dependency>
-
+        <dependency>
+            <groupId>org.antlr</groupId>
+            <artifactId>antlr4-runtime</artifactId>
+            <version>${antlr.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jscience</groupId>
+            <artifactId>jscience</artifactId>
+            <version>4.3.1</version>
+        </dependency>
     </dependencies>
 
     <properties>
         <java.version>1.8</java.version>
         <hibernate.version>5.0.7.Final</hibernate.version>
+        <antlr.version>4.5.1</antlr.version>
     </properties>
 
     <build>
@@ -58,19 +68,39 @@
                     <forkMode>never</forkMode>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.antlr</groupId>
+                <artifactId>antlr4-maven-plugin</artifactId>
+                <version>${antlr.version}</version>
+                <configuration>
+                    <visitor>true</visitor>
+                    <outputDirectory>
+                        ${project.build.directory}/generated-sources/com/kartashov/postgis/antlr
+                    </outputDirectory>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>antlr4</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 
     <repositories>
         <repository>
             <id>spring-releases</id>
-            <name>Spring Releases</name>
             <url>https://repo.spring.io/libs-release</url>
         </repository>
         <repository>
             <id>org.jboss.repository.releases</id>
-            <name>JBoss Maven Release Repository</name>
             <url>https://repository.jboss.org/nexus/content/repositories/releases</url>
+        </repository>
+        <repository>
+            <id>central</id>
+            <url>https://repo1.maven.org/maven2</url>
         </repository>
     </repositories>
 

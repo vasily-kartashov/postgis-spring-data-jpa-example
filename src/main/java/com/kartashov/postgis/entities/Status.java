@@ -21,4 +21,9 @@ public class Status {
     public void setLifeCycle(String lifeCycle) {
         this.lifeCycle = lifeCycle;
     }
+
+    @Override
+    public String toString() {
+        return "{ stateOfCharge: " + stateOfCharge + ", lifeCycle: " + lifeCycle + " }";
+    }
 }
